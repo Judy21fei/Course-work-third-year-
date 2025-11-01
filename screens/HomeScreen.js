@@ -6,9 +6,10 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [fontScale, setFontScale] = useState(0);
   const [isHighContrast, setIsHighContrast] = useState(false);
 
@@ -16,7 +17,7 @@ export default function HomeScreen() {
   const decreaseFont = () => setFontScale((p) => (p > -4 ? p - 2 : p));
   const toggleContrast = () => setIsHighContrast((prev) => !prev);
 
-  const fs = (size) => size + fontScale; // 🎨 Тема для нормального та контрастного режимів
+  const fs = (size) => size + fontScale; //Тема для нормального та контрастного режимів
 
   const theme = {
     background: isHighContrast ? "#F2F2F2" : "#FFFFFF",
@@ -33,56 +34,6 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      {/* --- Header --- */}
-      <View
-        style={[
-          styles.accessibleHeader,
-          {
-            backgroundColor: theme.headerBg,
-            borderBottomColor: theme.headerBorder,
-          },
-        ]}
-      >
-        <TouchableOpacity style={styles.minusButton} onPress={decreaseFont}>
-          <Image
-            source={require("../assets/images/icon_loop_minus.png")}
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.plusButton} onPress={increaseFont}>
-          <Image
-            source={require("../assets/images/icon_loop_plus.png")}
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.contrastButton}
-          onPress={toggleContrast}
-        >
-          <Image
-            source={require("../assets/images/icon_contrast.png")}
-            style={[styles.contrastIcon, { tintColor: theme.contrastIconTint }]}
-          />
-          <Text style={styles.contrastText}>Contrast</Text>
-        </TouchableOpacity>
-
-        <Text style={[styles.headerTitle, { fontSize: fs(24) }]}>
-          AccessibleHub
-        </Text>
-
-        <Text style={[styles.headerSubtitle, { fontSize: fs(16) }]}>
-          Resources for Everyone
-        </Text>
-
-        <View style={styles.menuButton}>
-          <Image
-            source={require("../assets/images/icon_menu.png")}
-            style={styles.menuIcon}
-          />
-        </View>
-      </View>
       {/* --- Scrollable Content --- */}
       <ScrollView contentContainerStyle={styles.content}>
         <Text
@@ -90,7 +41,6 @@ export default function HomeScreen() {
         >
           Welcome to AccessibleHub
         </Text>
-
         <Text
           style={[
             styles.welcomeDescription,
@@ -102,9 +52,9 @@ export default function HomeScreen() {
           comfortable experience for all users, including those with vision
           impairments.
         </Text>
-
         <TouchableOpacity
           style={[styles.exploreButton, { backgroundColor: theme.buttonBg }]}
+          onPress={() => navigation.navigate("Services")}
         >
           <Text
             style={[
@@ -115,9 +65,9 @@ export default function HomeScreen() {
             Explore Services
           </Text>
         </TouchableOpacity>
-
         <TouchableOpacity
           style={[styles.learnMoreButton, { borderColor: theme.border }]}
+          onPress={() => navigation.navigate("About")}
         >
           <Text
             style={[
@@ -128,7 +78,6 @@ export default function HomeScreen() {
             Learn More
           </Text>
         </TouchableOpacity>
-
         <View style={[styles.heroImageWrapper, { borderColor: theme.border }]}>
           <Image
             source={require("../assets/images/hero.jpg")}
@@ -164,7 +113,6 @@ export default function HomeScreen() {
                 style={styles.cardIcon}
               />
             </View>
-
             <Text
               style={[
                 styles.cardTitle,
@@ -173,7 +121,6 @@ export default function HomeScreen() {
             >
               Accessible Design
             </Text>
-
             <Text
               style={[
                 styles.cardDescription,
@@ -266,7 +213,6 @@ export default function HomeScreen() {
           >
             Available Resources
           </Text>
-
           {["resource1", "resource2", "resource3"].map((res, i) => (
             <View
               key={i}
@@ -282,7 +228,6 @@ export default function HomeScreen() {
                 }
                 style={styles.resourceImage}
               />
-
               <Text
                 style={[
                   styles.resourceTitle,
@@ -314,6 +259,7 @@ export default function HomeScreen() {
                   styles.learnMoreResourceButton,
                   { backgroundColor: theme.buttonBg },
                 ]}
+                onPress={() => navigation.navigate("About")}
               >
                 <Text
                   style={[
@@ -328,22 +274,85 @@ export default function HomeScreen() {
           ))}
         </View>
       </ScrollView>
+
+      {/* --- FIXED HEADER --- */}
+
+      <SafeAreaView style={styles.fixedHeaderWrapper}>
+        <View
+          style={[
+            styles.accessibleHeaderFixed, // Новий стиль для фіксації
+            {
+              backgroundColor: theme.headerBg,
+              borderBottomColor: theme.headerBorder,
+            },
+          ]}
+        >
+          <TouchableOpacity style={styles.minusButton} onPress={decreaseFont}>
+            <Image
+              source={require("../assets/images/icon_loop_minus.png")}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.plusButton} onPress={increaseFont}>
+            <Image
+              source={require("../assets/images/icon_loop_plus.png")}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.contrastButton}
+            onPress={toggleContrast}
+          >
+            <Image
+              source={require("../assets/images/icon_contrast.png")}
+              style={[
+                styles.contrastIcon,
+                { tintColor: theme.contrastIconTint },
+              ]}
+            />
+            <Text style={styles.contrastText}>Contrast</Text>
+          </TouchableOpacity>
+
+          <Text style={[styles.headerTitle, { fontSize: fs(24) }]}>
+            AccessibleHub
+          </Text>
+
+          <Text style={[styles.headerSubtitle, { fontSize: fs(16) }]}>
+            Resources for Everyone
+          </Text>
+
+          <View style={styles.menuButton}>
+            <Image
+              source={require("../assets/images/icon_menu.png")}
+              style={styles.menuIcon}
+            />
+          </View>
+        </View>
+      </SafeAreaView>
     </View>
   );
 }
 
-/* --- Styles (не змінювались) --- */
+/* --- Styles  --- */
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  accessibleHeader: {
+  container: {
+    flex: 1,
+  },
+  fixedHeaderWrapper: {
     position: "absolute",
     top: 0,
     left: 0,
+    right: 0,
+    zIndex: 100,
+  },
+  accessibleHeaderFixed: {
     width: "100%",
     height: 153,
     borderBottomWidth: 4,
-    zIndex: 10,
   },
+
   minusButton: {
     position: "absolute",
     top: 12,
@@ -415,7 +424,7 @@ const styles = StyleSheet.create({
   },
   menuIcon: { width: 24, height: 24, tintColor: "#FFFFFF" },
   content: {
-    paddingTop: 170,
+    paddingTop: 153,
     alignItems: "center",
     paddingBottom: 50,
   },
