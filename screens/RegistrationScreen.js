@@ -11,13 +11,15 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 
 export default function RegistrationScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (password.length < 6) {
       Alert.alert("Помилка", "Пароль повинен містити щонайменше 6 символів.");
       return;
@@ -27,12 +29,21 @@ export default function RegistrationScreen({ navigation }) {
       return;
     }
 
-    Alert.alert("Успіх", "Реєстрація успішна!");
-
-    navigation.replace("Home");
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      Alert.alert("Успіх", "Реєстрація успішна!");
+      navigation.replace("Home");
+    } catch (error) {
+      console.error(error);
+      if (error.code === "auth/email-already-in-use") {
+        Alert.alert("Помилка", "Цей email вже використовується.");
+      } else if (error.code === "auth/invalid-email") {
+        Alert.alert("Помилка", "Невірний формат email.");
+      } else {
+        Alert.alert("Помилка", "Не вдалося створити обліковий запис.");
+      }
+    }
   };
-
-  // ...
 
   return (
     <KeyboardAvoidingView
