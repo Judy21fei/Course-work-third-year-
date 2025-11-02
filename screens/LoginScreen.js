@@ -11,21 +11,25 @@ import {
   Platform,
   Alert,
 } from "react-native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // фальшиві облікові дані для тестування
-  const MOCK_EMAIL = "uzimirska@gmail.com";
-  const MOCK_PASSWORD = "password123";
-
-  const handleLogin = () => {
-    if (email === MOCK_EMAIL && password === MOCK_PASSWORD) {
+  const handleLogin = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       Alert.alert("Успіх", "Вхід успішний!");
       navigation.replace("Home");
-    } else {
-      Alert.alert("Помилка входу", "Неправильна електронна пошта або пароль.");
+    } catch (error) {
+      console.error(error);
+      if (error.code === "auth/invalid-credential") {
+        Alert.alert("Помилка", "Неправильний email або пароль.");
+      } else {
+        Alert.alert("Помилка", "Не вдалося увійти. Спробуйте ще раз.");
+      }
     }
   };
 
@@ -132,7 +136,11 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
-  loginButtonText: { color: "#FFFFFF", fontSize: 18, fontWeight: "700" },
+  loginButtonText: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
+  },
   registerPrompt: {
     marginTop: 35,
     textAlign: "center",
@@ -144,7 +152,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textDecorationLine: "underline",
   },
-  header: { alignItems: "center", marginBottom: 40 },
+  header: {
+    alignItems: "center",
+    marginBottom: 40,
+  },
   logo: {
     width: 80,
     height: 80,
@@ -167,5 +178,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textDecorationLine: "underline",
   },
-  form: { width: "100%", maxWidth: 350 },
+  form: {
+    width: "100%",
+    maxWidth: 350,
+  },
 });
