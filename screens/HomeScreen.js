@@ -365,6 +365,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
   plusButton: {
     position: "absolute",
     top: 12,
@@ -377,6 +378,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
   contrastButton: {
     position: "absolute",
     top: 12,
